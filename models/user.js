@@ -17,12 +17,12 @@ module.exports = class User extends Sequelize.Model {
                 allowNull: true,
             },
             provider: {
-                type: sequelize.STRING(10),
+                type: Sequelize.STRING(10),
                 allowNull: false,
                 defaultValue: 'local',
             },
             snsId: {
-                type: sequelize.STRING(30),
+                type: Sequelize.STRING(30),
                 allowNull: true,
             },
         }, {
@@ -37,5 +37,17 @@ module.exports = class User extends Sequelize.Model {
         });
     }
 
-    static associate(db) {}
+    static associate(db) {
+        db.User.hasMany(db.Post);
+        db.User.belongsToMany(db.User, {
+            foreignKey: 'followingId',
+            as: 'Followers',
+            through: 'Follow',
+        });
+        db.User.belongsToMany(db.User, {
+            foreignKey: 'followerId',
+            as: 'Followings',
+            through: 'Follow',
+        });
+    }
 };
